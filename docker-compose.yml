@@ -1,0 +1,26 @@
+version: '3'
+services:
+  broker-rabbitmq:
+    image: "rabbitmq:3.11.9-management"
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_VHOST=demo
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - broker-rabbitmq
+    volumes:
+      - .:/app
+
+  flower:
+    image: mher/flower:0.9.7
+    command: ["flower", "--broker=amqp://admin:password@broker-rabbitmq:5672/demo", "--port=8888"]
+    ports:
+      - 8888:8888
