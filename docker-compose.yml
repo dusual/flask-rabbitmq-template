@@ -19,6 +19,15 @@ services:
     volumes:
       - .:/app
 
+  api-worker01:
+    build: .
+    command: celery --app tasks.worker.celery worker --loglevel=info
+    depends_on:
+      - broker-rabbitmq
+      - api
+    volumes:
+      - .:/app
+
   flower:
     image: mher/flower:0.9.7
     command: ["flower", "--broker=amqp://admin:password@broker-rabbitmq:5672/demo", "--port=8888"]
