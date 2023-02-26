@@ -1,5 +1,7 @@
 from flask import Flask
 from celery import Celery
+from os.path import exists
+import csv
 
 
 app = Flask(__name__)
@@ -27,7 +29,9 @@ app.config.update(
 celery = make_celery(app)
 
 @celery.task
-def aggregator(body):
-    c = a + b
-    print(c)
-    return c
+def aggregator(payload):
+    with (open('./csv_file.csv', 'a')) as f:
+        writer = csv.writer(f)
+        for pred in payload['data']['preds']:
+            writer.writerow([pred['image_frame'], pred['prob'], ' '.join(pred['tags'])])
+    return "OK"

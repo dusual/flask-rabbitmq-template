@@ -7,6 +7,7 @@ RUN pip install flask
 RUN pip install celery
 RUN pip install watchdog
 RUN pip install gunicorn[gevent]
+RUN pip install jsonschema
 
 EXPOSE 8000
 CMD python app.py

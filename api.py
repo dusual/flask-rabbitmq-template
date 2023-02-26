@@ -104,5 +104,9 @@ def validator_executor():
         ])
     except Exception as e:
         return str(e), 422
+    for pred in payload['data']['preds']:
+        probability = pred['prob']
+        if probability < 0.25:
+            pred['tags'].append('low_prod')
     aggregator.delay(payload)
     return "Entity being processed", 202
